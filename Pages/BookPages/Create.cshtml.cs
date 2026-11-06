@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gester_Patrick_Lab2.Pages.BookPages;
 
-public class CreateModel : PageModel
+public class CreateModel : BookCategoriesPageModel
 {
     private readonly Gester_Patrick_Lab2Context _context; // DbContext-ul inca gol
 
@@ -25,6 +25,12 @@ public class CreateModel : PageModel
     {
         ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
         ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FirstName", "LastName");
+
+        var book = new Book();
+        book.Book_Categories = new List<Book_Category>();
+        PopulateAssignedCategoryData(_context, book);
+
+
         return Page();
     }
 
@@ -33,16 +39,24 @@ public class CreateModel : PageModel
     public Book Book { get; set; } = default!;
 
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD.
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
     {
-        if (!ModelState.IsValid)
+        var newBook = new Book();
+        if (selectedCategories != null)
         {
-            return Page();
+            newBook.Book_Categories = new List<Book_Category>();
+            foreach (var cat in selectedCategories)
+            {
+                var catToAdd = new Book_Category
+                {
+                    CategoryID = int.Parse(cat)
+                };
+                newBook.Book_Categories.Add(catToAdd);
+            }
         }
-
+        Book.Book_Categories = newBook.Book_Categories;
         _context.Book.Add(Book);
         await _context.SaveChangesAsync();
-
         return RedirectToPage("./Index");
     }
 }

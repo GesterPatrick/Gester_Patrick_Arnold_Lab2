@@ -22,6 +22,6 @@ namespace Gester_Patrick_Lab2.Models
         public int? PublisherID { get; set; }
         public Publisher? Publisher { get; set; } //navigation property
 
-
+        public ICollection<Book_Category>? Book_Categories { get; set; } //navigation property>
     }
 }

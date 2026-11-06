@@ -75,6 +75,46 @@ namespace Gester_Patrick_Lab2.Migrations
                     b.ToTable("Book");
                 });
 
+            modelBuilder.Entity("Gester_Patrick_Lab2.Models.Book_Category", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("BookID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BookID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("Book_Category");
+                });
+
+            modelBuilder.Entity("Gester_Patrick_Lab2.Models.Category", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Category");
+                });
+
             modelBuilder.Entity("Gester_Patrick_Lab2.Models.Publisher", b =>
                 {
                     b.Property<int>("ID")
@@ -105,6 +145,35 @@ namespace Gester_Patrick_Lab2.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("Gester_Patrick_Lab2.Models.Book_Category", b =>
+                {
+                    b.HasOne("Gester_Patrick_Lab2.Models.Book", "Book")
+                        .WithMany("Book_Categories")
+                        .HasForeignKey("BookID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gester_Patrick_Lab2.Models.Category", "Category")
+                        .WithMany("Book_Categories")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Gester_Patrick_Lab2.Models.Book", b =>
+                {
+                    b.Navigation("Book_Categories");
+                });
+
+            modelBuilder.Entity("Gester_Patrick_Lab2.Models.Category", b =>
+                {
+                    b.Navigation("Book_Categories");
                 });
 
             modelBuilder.Entity("Gester_Patrick_Lab2.Models.Publisher", b =>
